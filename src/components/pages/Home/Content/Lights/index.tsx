@@ -12,7 +12,7 @@ export const Spotlight = () => {
       angle={0.6}
       penumbra={1}
       intensity={200}
-      position={[3, 8, 5]}
+      position={[5, 5, 10]}
     />
   )
 }

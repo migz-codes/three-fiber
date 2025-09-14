@@ -8,6 +8,7 @@ import { Helpers } from './Helpers'
 import { Lights } from './Lights'
 import { Loader } from './Loader'
 import { Objects } from './Objects'
+import { Sounds } from './Sounds'
 
 export const Content = () => (
   <main className='w-screen h-screen flex flex-col'>
@@ -20,6 +21,8 @@ export const Content = () => (
         <Objects />
 
         <Cameras />
+
+        <Sounds />
 
         <Lights />
       </Suspense>
