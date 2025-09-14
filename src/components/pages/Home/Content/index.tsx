@@ -1,17 +1,12 @@
 'use client'
 
-import { GizmoHelper, GizmoViewcube, OrbitControls, useHelper } from '@react-three/drei'
+import { OrbitControls } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 import { useRef } from 'react'
-import * as THREE from 'three'
-
-export const Spotlight = () => {
-  const light = useRef<any>(null)
-
-  useHelper(light, THREE.SpotLightHelper, 'orange')
-
-  return <spotLight ref={light} position={[2, 5, 1]} intensity={80} angle={0.1} penumbra={1} />
-}
+import type * as THREE from 'three'
+import { Ambient } from './Ambient'
+import { Helpers } from './Helpers'
+import { Lights } from './Lights'
 
 export const Cube = () => {
   const cube = useRef<THREE.Mesh>(null)
@@ -25,8 +20,8 @@ export const Cube = () => {
   // })
 
   return (
-    <mesh ref={cube}>
-      <axesHelper args={[10]} />
+    <mesh ref={cube} position={[0, 3, 0]} castShadow>
+      {/* <axesHelper args={[10]} /> */}
 
       <boxGeometry args={[2, 2, 2]} />
       <meshPhongMaterial color='#666cff' />
@@ -36,18 +31,14 @@ export const Cube = () => {
 
 export const Content = () => (
   <main className='w-screen h-screen flex flex-col'>
-    <Canvas className='bg-primary-500 w-[50%] h-full' camera={{ position: [2, 2, 2] }}>
-      <gridHelper args={[10, 10, '#f00', '#fff']} />
-      <GizmoHelper alignment='bottom-right' margin={[80, 80]} scale={100}>
-        <GizmoViewcube />
-      </GizmoHelper>
+    <Canvas shadows camera={{ position: [2, 2, 2] }} className='bg-primary-500 w-[50%] h-full'>
+      <Helpers />
 
+      <Ambient />
       <Cube />
 
       <OrbitControls />
-
-      <directionalLight position={[2, 5, 1]} />
-      <Spotlight />
+      <Lights />
     </Canvas>
   </main>
 )
