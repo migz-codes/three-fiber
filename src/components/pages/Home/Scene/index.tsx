@@ -10,7 +10,7 @@ import { Loader } from './Loader'
 import { Objects } from './Objects'
 import { Sounds } from './Sounds'
 
-export const Content = () => (
+export const Scene = () => (
   <main className='w-screen h-screen flex flex-col'>
     <Canvas shadows camera={{ position: [2, 2, 2] }} className='bg-primary-500 w-[50%] h-full'>
       <Suspense fallback={<Loader />}>

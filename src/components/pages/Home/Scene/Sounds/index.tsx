@@ -7,20 +7,18 @@ export const Sounds = () => {
 
   useEffect(() => {
     const listener = new AudioListener()
-
-    camera.add(listener)
-
     const sound = new Audio(listener)
     const audioLoader = new AudioLoader()
 
-    audioLoader.load('/sounds/environment.wav', (buffer) => {
-      sound.setBuffer(buffer)
+    const onLoad = (buffer: AudioBuffer) => {
       sound.setVolume(0.2)
+      sound.setBuffer(buffer)
 
-      window.addEventListener('click', () => {
-        sound.play()
-      })
-    })
+      window.addEventListener('click', () => sound.play())
+    }
+
+    camera.add(listener)
+    audioLoader.load('/sounds/environment.wav', onLoad)
   }, [camera])
 
   return <></>

@@ -1,5 +1,5 @@
 import { useLoader } from '@react-three/fiber'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import * as THREE from 'three'
 import { EXRLoader } from 'three/examples/jsm/Addons.js'
 
@@ -20,14 +20,17 @@ export const Ground = ({ depth, size }: TGroundProps) => {
     '/textures/terrain/rough.exr'
   ])
 
-  diffuse.colorSpace = THREE.SRGBColorSpace
+  const geometry = useMemo(
+    () => new THREE.BoxGeometry(size, depth, size + depth, 64, 1, 64),
+    [size, depth]
+  )
 
-  const geometry = useMemo(() => {
-    return new THREE.BoxGeometry(size, depth, size + depth, 64, 1, 64)
-  }, [size, depth])
+  useEffect(() => {
+    diffuse.colorSpace = THREE.SRGBColorSpace
+  }, [diffuse])
 
   return (
-    <mesh position={[0, 0, 0]} receiveShadow geometry={geometry}>
+    <mesh receiveShadow position={[0, 0, 0]} geometry={geometry}>
       <meshStandardMaterial
         map={diffuse}
         metalness={0}

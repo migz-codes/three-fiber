@@ -8,8 +8,6 @@ export const Cube = () => {
 
   return (
     <mesh ref={cube} position={[0, 1.3, 0]} castShadow>
-      {/* <axesHelper args={[10]} /> */}
-
       <boxGeometry args={[2, 2, 2]} />
       <meshPhongMaterial color='#cabaa9' map={texture} />
     </mesh>

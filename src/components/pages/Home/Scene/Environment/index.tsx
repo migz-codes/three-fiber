@@ -2,11 +2,11 @@ import { degToRad } from '@/utils/degToRad'
 import { Ground } from './Ground'
 import { Wall } from './Wall'
 
-export const Environment = () => {
-  const depth = 0.01
-  const size = 30
-  const height = 10
+const size = 30
+const height = 10
+const depth = 0.01
 
+export const Environment = () => {
   return (
     <>
       <Wall size={size} height={height} depth={depth} position={[0, height / 2, -size / 2]} />

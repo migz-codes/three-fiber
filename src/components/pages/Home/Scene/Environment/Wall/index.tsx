@@ -12,24 +12,27 @@ export interface TWallProps {
 }
 
 export const Wall = ({ size, height, depth, position, rotation }: TWallProps) => {
+  const [normal, roughness] = useLoader(EXRLoader, [
+    '/textures/rock/nor.exr',
+    '/textures/rock/rough.exr'
+  ])
+
   const [diffuse, displacement] = useLoader(THREE.TextureLoader, [
     '/textures/rock/diff.jpg',
     '/textures/rock/disp.png'
   ])
 
-  const normal = useLoader(EXRLoader, '/textures/rock/nor.exr')
-  const roughness = useLoader(EXRLoader, '/textures/rock/rough.exr')
+  const geometry = useMemo(
+    () => new THREE.BoxGeometry(size, height - depth, depth, 64, 10, 64),
+    [size, height, depth]
+  )
 
   useEffect(() => {
     diffuse.colorSpace = THREE.SRGBColorSpace
   }, [diffuse])
 
-  const geometry = useMemo(() => {
-    return new THREE.BoxGeometry(size, height - depth, depth, 64, 10, 64)
-  }, [size, height, depth])
-
   return (
-    <mesh position={position} rotation={rotation} receiveShadow geometry={geometry}>
+    <mesh receiveShadow position={position} rotation={rotation} geometry={geometry}>
       <meshStandardMaterial
         metalness={0}
         map={diffuse}

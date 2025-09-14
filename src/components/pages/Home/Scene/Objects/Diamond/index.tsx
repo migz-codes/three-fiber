@@ -13,42 +13,40 @@ export const Diamond = () => {
 
   useEffect(() => {
     scene.traverse((child: any) => {
-      if (child.isMesh) {
-        child.castShadow = true
-        child.receiveShadow = true
-      }
+      if (!child.isMesh) return
+
+      child.castShadow = true
+      child.receiveShadow = true
     })
   }, [scene])
 
   useEffect(() => {
     const listener = new AudioListener()
+    const audioLoader = new AudioLoader()
+    const sound = new PositionalAudio(listener)
+
     camera.add(listener)
 
-    const sound = new PositionalAudio(listener)
-    const audioLoader = new AudioLoader()
-
     audioLoader.load('/sounds/sword.wav', (buffer) => {
-      sound.setBuffer(buffer)
       sound.setVolume(0.4)
+      sound.setBuffer(buffer)
       sound.setRefDistance(3)
+
       audioRef.current = sound
 
       if (diamond.current) diamond.current.add(sound)
 
-      window.addEventListener('click', () => {
-        sound.play()
-      })
+      window.addEventListener('click', () => sound.play())
     })
 
     return () => {
-      window.removeEventListener('click', () => {
-        sound.stop()
-      })
+      window.removeEventListener('click', () => sound.stop())
     }
   }, [camera])
 
   useFrame(() => {
     if (!diamond.current) return
+
     diamond.current.rotation.y += degToRad(1)
   })
 
