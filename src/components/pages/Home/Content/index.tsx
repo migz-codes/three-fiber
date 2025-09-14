@@ -1,9 +1,17 @@
 'use client'
 
-import { GizmoHelper, GizmoViewcube, OrbitControls } from '@react-three/drei'
+import { GizmoHelper, GizmoViewcube, OrbitControls, useHelper } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 import { useRef } from 'react'
-import type * as THREE from 'three'
+import * as THREE from 'three'
+
+export const Spotlight = () => {
+  const light = useRef<any>(null)
+
+  useHelper(light, THREE.SpotLightHelper, 'orange')
+
+  return <spotLight ref={light} position={[2, 5, 1]} intensity={80} angle={0.1} penumbra={1} />
+}
 
 export const Cube = () => {
   const cube = useRef<THREE.Mesh>(null)
@@ -34,9 +42,12 @@ export const Content = () => (
         <GizmoViewcube />
       </GizmoHelper>
 
-      <OrbitControls />
       <Cube />
+
+      <OrbitControls />
+
       <directionalLight position={[2, 5, 1]} />
+      <Spotlight />
     </Canvas>
   </main>
 )
