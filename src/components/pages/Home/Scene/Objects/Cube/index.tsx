@@ -7,7 +7,7 @@ export const Cube = () => {
   const texture = useLoader(THREE.TextureLoader, '/textures/wood/diff.jpg')
 
   return (
-    <mesh ref={cube} position={[0, 1.3, 0]} castShadow>
+    <mesh ref={cube} position={[10, 1.3, 0]} castShadow>
       <boxGeometry args={[2, 2, 2]} />
       <meshPhongMaterial color='#cabaa9' map={texture} />
     </mesh>

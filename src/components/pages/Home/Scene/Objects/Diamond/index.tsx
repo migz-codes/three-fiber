@@ -50,5 +50,5 @@ export const Diamond = () => {
     diamond.current.rotation.y += degToRad(1)
   })
 
-  return <primitive ref={diamond} object={scene} scale={0.5} position={[0, 2.4, 0]} />
+  return <primitive ref={diamond} object={scene} scale={0.5} position={[10, 2.4, 0]} />
 }
