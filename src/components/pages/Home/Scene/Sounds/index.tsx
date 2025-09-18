@@ -11,7 +11,7 @@ export const Sounds = () => {
     const audioLoader = new AudioLoader()
 
     const onLoad = (buffer: AudioBuffer) => {
-      sound.setVolume(0.2)
+      sound.setVolume(0.05)
       sound.setBuffer(buffer)
 
       window.addEventListener('click', () => sound.play())

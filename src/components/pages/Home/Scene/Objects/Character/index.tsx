@@ -1,94 +1,100 @@
-import { PerspectiveCamera, PointerLockControls } from '@react-three/drei'
-import { useFrame, useThree } from '@react-three/fiber'
-import { useEffect, useRef, useState } from 'react'
+import { PerspectiveCamera, PointerLockControls, useKeyboardControls } from '@react-three/drei'
+import { useFrame } from '@react-three/fiber'
+import { CapsuleCollider, type RapierRigidBody, RigidBody } from '@react-three/rapier'
+import { useRef } from 'react'
 import * as THREE from 'three'
+import { CharacterControls } from '../..'
 
 const speed = 5
-const eyeLevel = 1.6
+const eyeLevel = 2
+const capsuleRadius = 1
 
 export const Character = () => {
-  const { camera } = useThree()
-  const meshRef = useRef<THREE.Mesh>(null)
+  const isOnFloor = useRef<boolean>(false)
+  const bodyRef = useRef<RapierRigidBody>(null)
+  const cameraRef = useRef<THREE.PerspectiveCamera>(null)
 
-  const [keys, setKeys] = useState({
-    w: false,
-    a: false,
-    s: false,
-    d: false,
-    c: false,
-    shift: false
-  })
+  const jumpPressed = useKeyboardControls((state) => state[CharacterControls.Jump])
+  const leftPressed = useKeyboardControls((state) => state[CharacterControls.Left])
+  const rightPressed = useKeyboardControls((state) => state[CharacterControls.Right])
+  const resetPressed = useKeyboardControls((state) => state[CharacterControls.Reset])
+  const sprintPressed = useKeyboardControls((state) => state[CharacterControls.Sprint])
+  const forwardPressed = useKeyboardControls((state) => state[CharacterControls.Forward])
+  const backwardPressed = useKeyboardControls((state) => state[CharacterControls.Backward])
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      setKeys((oldKeys) => ({ ...oldKeys, [e.key.toLowerCase()]: true }))
-    }
+  const onCollisionEnter = ({ other }: { other: any }) => {
+    if (other.rigidBodyObject?.name === 'ground') isOnFloor.current = true
+  }
 
-    const warnOnTabClose = (e: BeforeUnloadEvent) => {
-      e.preventDefault()
-      e.returnValue = '' // Required for some browsers to show the prompt
-    }
+  const onCollisionExit = ({ other }: { other: any }) => {
+    if (other.rigidBodyObject?.name === 'ground') isOnFloor.current = false
+  }
 
-    const handleKeyUp = (e: KeyboardEvent) => {
-      setKeys((oldKeys) => ({ ...oldKeys, [e.key.toLowerCase()]: false }))
-    }
+  const movements = () => {
+    if (!bodyRef.current || !cameraRef.current) return
 
-    window.addEventListener('keyup', handleKeyUp)
-    window.addEventListener('keydown', handleKeyDown)
-    window.addEventListener('beforeunload', warnOnTabClose)
+    const move = new THREE.Vector3()
+    const camDir = new THREE.Vector3()
+    const camRight = new THREE.Vector3()
 
-    return () => {
-      window.removeEventListener('keyup', handleKeyUp)
-      window.removeEventListener('keydown', handleKeyDown)
-      window.removeEventListener('beforeunload', warnOnTabClose)
-    }
-  }, [])
+    const vel = bodyRef.current.linvel()
+    const finalSpeed = sprintPressed ? speed * 4 : speed
 
-  useFrame((_, delta) => {
-    if (!meshRef.current) return
+    cameraRef.current.getWorldDirection(camDir)
+    camDir.y = 0
+    camDir.normalize()
+    camRight.crossVectors(camDir, new THREE.Vector3(0, 1, 0)).normalize()
 
-    const moveDirection = new THREE.Vector3()
-    const forward = new THREE.Vector3()
-    const right = new THREE.Vector3()
+    if (forwardPressed) move.add(camDir)
+    if (backwardPressed) move.sub(camDir)
+    if (leftPressed) move.sub(camRight)
+    if (rightPressed) move.add(camRight)
 
-    camera.getWorldDirection(forward)
+    if (move.lengthSq() > 0) {
+      move.normalize().multiplyScalar(finalSpeed)
+      bodyRef.current.setLinvel({ x: move.x, y: vel.y, z: move.z }, true)
+    } else bodyRef.current.setLinvel({ x: 0, y: vel.y, z: 0 }, true)
 
-    forward.y = 0
-    forward.normalize()
+    if (jumpPressed && isOnFloor.current) bodyRef.current.applyImpulse({ x: 0, y: 70, z: 0 }, true)
+  }
 
-    right.crossVectors(camera.up, forward)
-    right.normalize()
+  const resetPosition = () => {
+    if (!resetPressed || !bodyRef.current) return
 
-    if (keys.w) moveDirection.add(forward)
-    if (keys.s) moveDirection.addScaledVector(forward, -1)
-    if (keys.a) moveDirection.add(right)
-    if (keys.d) moveDirection.addScaledVector(right, -1)
+    bodyRef.current.setTranslation({ x: 0, y: 20, z: 0 }, true)
+  }
 
-    if (moveDirection.length() > 0) {
-      moveDirection.normalize()
+  const attachCamera = () => {
+    if (!bodyRef.current || !cameraRef.current) return
 
-      const finalSpeed = keys.shift ? speed * 2 : speed
+    cameraRef.current.position.x = bodyRef.current.translation().x
+    cameraRef.current.position.y = bodyRef.current.translation().y + eyeLevel
+    cameraRef.current.position.z = bodyRef.current.translation().z
+  }
 
-      meshRef.current.position.addScaledVector(moveDirection, finalSpeed * delta)
-    }
-
-    const finalEyeLevel = keys.c ? eyeLevel / 2 : eyeLevel
-
-    camera.position.x = meshRef.current.position.x
-    camera.position.y = meshRef.current.position.y + finalEyeLevel
-    camera.position.z = meshRef.current.position.z
+  useFrame(() => {
+    movements()
+    resetPosition()
+    attachCamera()
   })
 
   return (
     <>
-      <mesh ref={meshRef} position={[0, 1, 0]} scale={0.5} castShadow>
-        <boxGeometry args={[2, 10, 2]} />
-        <meshPhongMaterial color='#ff0000' />
-      </mesh>
+      <RigidBody
+        ref={bodyRef}
+        name='character'
+        colliders={false}
+        enabledRotations={[false, false, false]}
+        onCollisionEnter={onCollisionEnter}
+        onCollisionExit={onCollisionExit}
+      >
+        <mesh position={[0, 20, 0]} />
 
-      <PointerLockControls />
+        <CapsuleCollider args={[eyeLevel / 2, capsuleRadius]} />
+      </RigidBody>
 
-      <PerspectiveCamera makeDefault position={[0, 1.6, 0]} fov={80} />
+      <PointerLockControls attach='camera' />
+      <PerspectiveCamera makeDefault ref={cameraRef} fov={75} name='camera' />
     </>
   )
 }

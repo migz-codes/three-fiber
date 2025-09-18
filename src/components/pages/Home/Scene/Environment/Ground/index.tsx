@@ -1,45 +1,23 @@
-import { useLoader } from '@react-three/fiber'
-import { useEffect, useMemo } from 'react'
+import { RigidBody } from '@react-three/rapier'
+import { useMemo } from 'react'
 import * as THREE from 'three'
-import { EXRLoader } from 'three/examples/jsm/Addons.js'
+import { useARMTexturesWithDisplacement } from '@/hooks/useTextures'
+import { degToRad } from '@/utils/degToRad'
 
-export interface TGroundProps {
-  size: number
-  depth: number
-  height: number
-}
+export const Ground = () => {
+  const { textures, applyUV2 } = useARMTexturesWithDisplacement({ name: 'terrain' })
 
-export const Ground = ({ depth, size }: TGroundProps) => {
-  const [diffuse, displacement] = useLoader(THREE.TextureLoader, [
-    '/textures/terrain/diff.jpg',
-    '/textures/terrain/disp.png'
-  ])
-
-  const [normal, roughness] = useLoader(EXRLoader, [
-    '/textures/terrain/nor.exr',
-    '/textures/terrain/rough.exr'
-  ])
-
-  const geometry = useMemo(
-    () => new THREE.BoxGeometry(size, depth, size + depth, 64, 1, 64),
-    [size, depth]
-  )
-
-  useEffect(() => {
-    diffuse.colorSpace = THREE.SRGBColorSpace
-  }, [diffuse])
+  const geometry = useMemo(() => {
+    const geo = new THREE.PlaneGeometry(20, 20, 10, 10)
+    applyUV2(geo)
+    return geo
+  }, [applyUV2])
 
   return (
-    <mesh receiveShadow position={[0, 0, 0]} geometry={geometry}>
-      <meshStandardMaterial
-        map={diffuse}
-        metalness={0}
-        normalMap={normal}
-        displacementScale={1}
-        displacementBias={-0.05}
-        roughnessMap={roughness}
-        displacementMap={displacement}
-      />
-    </mesh>
+    <RigidBody type='fixed' name='ground' colliders={false}>
+      <mesh receiveShadow position={[0, 0, 0]} rotation={[degToRad(-90), 0, 0]} geometry={geometry}>
+        <meshStandardMaterial {...textures} />
+      </mesh>
+    </RigidBody>
   )
 }
