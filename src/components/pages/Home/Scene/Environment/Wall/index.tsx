@@ -12,7 +12,7 @@ export interface TWallProps {
 }
 
 export const Wall = ({ size, height, depth, position, rotation }: TWallProps) => {
-  const { textures, applyUV2 } = useARMTextures({ name: '/rock' })
+  const { textures, applyUV2 } = useARMTextures({ name: 'rock' })
 
   const geometry = useMemo(() => {
     const geo = new THREE.BoxGeometry(size, height - depth, depth, 64, 10, 64)

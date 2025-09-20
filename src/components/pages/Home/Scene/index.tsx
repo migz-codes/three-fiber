@@ -9,6 +9,7 @@ import { Environment } from './Environment'
 import { Helpers } from './Helpers'
 import { Lights } from './Lights'
 import { Loader } from './Loader'
+import { Menu } from './Menu'
 import { Objects } from './Objects'
 import { Sounds } from './Sounds'
 
@@ -38,26 +39,30 @@ const controls = {
 
 const controlsMap = Object.entries(controls).map(([key, value]) => ({ name: key, keys: value }))
 
-export const Scene = () => (
-  <main className='w-screen h-screen flex flex-col'>
-    <KeyboardControls map={controlsMap}>
-      <Canvas shadows className='bg-primary-500 w-[50%] h-full'>
-        <Suspense fallback={<Loader />}>
-          <Physics debug>
-            <Helpers />
+export const Scene = () => {
+  return (
+    <main className='w-screen h-screen flex flex-col'>
+      <Menu />
 
-            <Environment />
+      <KeyboardControls map={controlsMap}>
+        <Canvas shadows className='bg-primary-500 w-[50%] h-full'>
+          <Suspense fallback={<Loader />}>
+            <Physics>
+              <Helpers />
 
-            <Objects />
+              <Environment />
 
-            <Cameras />
+              <Objects />
 
-            <Sounds />
+              <Cameras />
 
-            <Lights />
-          </Physics>
-        </Suspense>
-      </Canvas>
-    </KeyboardControls>
-  </main>
-)
+              <Sounds />
+
+              <Lights />
+            </Physics>
+          </Suspense>
+        </Canvas>
+      </KeyboardControls>
+    </main>
+  )
+}

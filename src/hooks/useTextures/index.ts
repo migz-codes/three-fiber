@@ -75,7 +75,7 @@ export const useARMTexturesWithDisplacement = ({ name }: { name: string }) => {
       normalMap: normal,
       roughnessMap: arm,
       metalnessMap: arm,
-      displacementScale: 0.1,
+      displacementScale: 1,
 
       displacementMap: displacement
     }

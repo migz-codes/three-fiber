@@ -1,8 +1,15 @@
-import { PerspectiveCamera, PointerLockControls, useKeyboardControls } from '@react-three/drei'
+import {
+  OrbitControls,
+  PerspectiveCamera,
+  PointerLockControls,
+  useKeyboardControls
+} from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { CapsuleCollider, type RapierRigidBody, RigidBody } from '@react-three/rapier'
+import { useAtomValue } from 'jotai'
 import { useRef } from 'react'
 import * as THREE from 'three'
+import { globalStore } from '@/store'
 import { CharacterControls } from '../..'
 
 const speed = 5
@@ -10,6 +17,7 @@ const eyeLevel = 2
 const capsuleRadius = 1
 
 export const Character = () => {
+  const isDev = useAtomValue(globalStore.isDev)
   const isOnFloor = useRef<boolean>(false)
   const bodyRef = useRef<RapierRigidBody>(null)
   const cameraRef = useRef<THREE.PerspectiveCamera>(null)
@@ -78,15 +86,22 @@ export const Character = () => {
     attachCamera()
   })
 
+  if (isDev)
+    return (
+      <>
+        <OrbitControls />
+      </>
+    )
+
   return (
     <>
       <RigidBody
         ref={bodyRef}
         name='character'
         colliders={false}
-        enabledRotations={[false, false, false]}
-        onCollisionEnter={onCollisionEnter}
         onCollisionExit={onCollisionExit}
+        onCollisionEnter={onCollisionEnter}
+        enabledRotations={[false, false, false]}
       >
         <mesh position={[0, 20, 0]} />
 
