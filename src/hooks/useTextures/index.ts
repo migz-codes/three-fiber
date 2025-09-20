@@ -12,12 +12,22 @@ export const useARMTextures = ({ name }: { name: string }) => {
   const applyUV2 = (geo: THREE.BufferGeometry) =>
     geo.setAttribute('uv2', new THREE.BufferAttribute(geo.attributes.uv.array, 2))
 
+  const makeRepeatable = (repeatX = 1, repeatY = 1) => {
+    ;[normal, diffuse, arm].forEach((tex) => {
+      if (!tex) return
+      tex.wrapS = tex.wrapT = THREE.RepeatWrapping
+      tex.repeat.set(repeatX, repeatY)
+      tex.anisotropy = 8
+    })
+  }
+
   useEffect(() => {
     diffuse.colorSpace = THREE.SRGBColorSpace
   }, [diffuse])
 
   return {
     applyUV2,
+    makeRepeatable,
     textures: {
       aoMap: arm,
       map: diffuse,
@@ -38,6 +48,15 @@ export const useARMTexturesWithDisplacement = ({ name }: { name: string }) => {
     `/textures/${name}/disp.png`
   ])
 
+  const makeRepeatable = (repeatX = 1, repeatY = 1) => {
+    ;[normal, diffuse, arm, displacement].forEach((tex) => {
+      if (!tex) return
+      tex.wrapS = tex.wrapT = THREE.RepeatWrapping
+      tex.repeat.set(repeatX, repeatY)
+      tex.anisotropy = 8
+    })
+  }
+
   const applyUV2 = (geo: THREE.BufferGeometry) =>
     geo.setAttribute('uv2', new THREE.BufferAttribute(geo.attributes.uv.array, 2))
 
@@ -47,6 +66,7 @@ export const useARMTexturesWithDisplacement = ({ name }: { name: string }) => {
 
   return {
     applyUV2,
+    makeRepeatable,
     textures: {
       aoMap: arm,
       map: diffuse,
