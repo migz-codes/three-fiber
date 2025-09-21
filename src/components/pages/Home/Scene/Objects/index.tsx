@@ -1,4 +1,5 @@
 import { Character } from './Character'
+import { Chest } from './Chest'
 
 export const Objects = () => (
   <>
@@ -6,5 +7,6 @@ export const Objects = () => (
     {/* <Sword /> */}
     {/* <Diamond /> */}
     <Character />
+    <Chest />
   </>
 )

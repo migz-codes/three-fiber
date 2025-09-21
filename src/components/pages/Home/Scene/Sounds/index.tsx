@@ -6,11 +6,12 @@ export const Sounds = () => {
   const { camera } = useThree()
 
   useEffect(() => {
+    const audioLoader = new AudioLoader()
     const listener = new AudioListener()
     const sound = new Audio(listener)
-    const audioLoader = new AudioLoader()
 
     const onLoad = (buffer: AudioBuffer) => {
+      sound.loop = true
       sound.setVolume(0.05)
       sound.setBuffer(buffer)
 

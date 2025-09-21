@@ -3,6 +3,7 @@ import { RigidBody } from '@react-three/rapier'
 import { useEffect } from 'react'
 import * as THREE from 'three'
 import { useARMTexturesWithDisplacement } from '@/hooks/useTextures'
+import { degToRad } from '@/utils/degToRad'
 
 export const Cave = () => {
   const { scene } = useGLTF('/models/cave_rocks.glb')
@@ -39,8 +40,8 @@ export const Cave = () => {
           castShadow
           scale={0.01}
           object={scene}
-          position={[0, 0, 0]}
-          rotation={[0, 0, 0]}
+          position={[-20, 0, -20]}
+          rotation={[0, degToRad(-90), 0]}
         />
       </RigidBody>
     </>

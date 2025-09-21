@@ -45,7 +45,7 @@ export const Scene = () => {
       <Menu />
 
       <KeyboardControls map={controlsMap}>
-        <Canvas shadows className='bg-primary-500 w-[50%] h-full'>
+        <Canvas shadows className='bg-black w-[50%] h-full'>
           <Suspense fallback={<Loader />}>
             <Physics>
               <Helpers />
