@@ -108,7 +108,7 @@ export const Character = () => {
         <CapsuleCollider args={[eyeLevel / 2, capsuleRadius]} />
       </RigidBody>
 
-      <PointerLockControls attach='camera' />
+      <PointerLockControls attach='camera' selector='#canvas' />
       <PerspectiveCamera makeDefault ref={cameraRef} fov={75} name='camera' />
     </>
   )

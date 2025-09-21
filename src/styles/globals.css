@@ -1,6 +1,5 @@
-@import 'tailwindcss';
-
-@import './themes/breakpoints.css';
-@import './themes/colors.css';
-@import './themes/fonts.css';
-@import './themes/base.css';
+@import "tailwindcss";
+@import "./themes/breakpoints.css";
+@import "./themes/colors.css";
+@import "./themes/fonts.css";
+@import "./themes/base.css";

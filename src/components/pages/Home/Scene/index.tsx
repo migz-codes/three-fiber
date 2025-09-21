@@ -4,65 +4,38 @@ import { KeyboardControls } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 import { Physics } from '@react-three/rapier'
 import { Suspense } from 'react'
+import { controlsMap } from '@/static/controls'
 import { Cameras } from './Cameras'
 import { Environment } from './Environment'
 import { Helpers } from './Helpers'
 import { Lights } from './Lights'
 import { Loader } from './Loader'
-import { Menu } from './Menu'
 import { Objects } from './Objects'
+import { Overlay } from './Overlay'
 import { Sounds } from './Sounds'
 
-export enum CharacterControls {
-  Forward = 'forward',
-  Sprint = 'sprint',
-  Backward = 'backward',
-  Left = 'left',
-  Right = 'right',
-  Crouch = 'crouch',
-  Jump = 'jump',
-  Reset = 'reset',
-  Dev = 'Dev'
-}
+export const Scene = () => (
+  <main className='w-screen h-screen flex flex-col'>
+    <Overlay />
 
-const controls = {
-  [CharacterControls.Dev]: ['KeyY'],
-  [CharacterControls.Reset]: ['KeyR'],
-  [CharacterControls.Forward]: ['KeyW', 'ArrowUp'],
-  [CharacterControls.Sprint]: ['ShiftLeft'],
-  [CharacterControls.Backward]: ['KeyS', 'ArrowDown'],
-  [CharacterControls.Left]: ['KeyA', 'ArrowLeft'],
-  [CharacterControls.Right]: ['KeyD', 'ArrowRight'],
-  [CharacterControls.Crouch]: ['ControlLeft', 'KeyC'],
-  [CharacterControls.Jump]: ['Space']
-}
+    <KeyboardControls map={controlsMap}>
+      <Canvas shadows className='bg-black w-[50%] h-full' id='canvas'>
+        <Suspense fallback={<Loader />}>
+          <Physics>
+            <Helpers />
 
-const controlsMap = Object.entries(controls).map(([key, value]) => ({ name: key, keys: value }))
+            <Environment />
 
-export const Scene = () => {
-  return (
-    <main className='w-screen h-screen flex flex-col'>
-      <Menu />
+            <Objects />
 
-      <KeyboardControls map={controlsMap}>
-        <Canvas shadows className='bg-black w-[50%] h-full'>
-          <Suspense fallback={<Loader />}>
-            <Physics>
-              <Helpers />
+            <Cameras />
 
-              <Environment />
+            <Sounds />
 
-              <Objects />
-
-              <Cameras />
-
-              <Sounds />
-
-              <Lights />
-            </Physics>
-          </Suspense>
-        </Canvas>
-      </KeyboardControls>
-    </main>
-  )
-}
+            <Lights />
+          </Physics>
+        </Suspense>
+      </Canvas>
+    </KeyboardControls>
+  </main>
+)
