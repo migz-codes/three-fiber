@@ -1,7 +1,11 @@
+import { useHelper } from '@react-three/drei'
 import { useRef } from 'react'
+import { PointLightHelper } from 'three'
 
 export const Spotlight = () => {
   const light = useRef<any>(null)
+
+  useHelper(light, PointLightHelper, 1, 'blue')
 
   return (
     <spotLight

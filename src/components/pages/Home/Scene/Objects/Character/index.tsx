@@ -18,6 +18,7 @@ const capsuleRadius = 1
 
 export const Character = () => {
   const isDev = useAtomValue(globalStore.isDev)
+
   const isOnFloor = useRef<boolean>(false)
   const bodyRef = useRef<RapierRigidBody>(null)
   const cameraRef = useRef<THREE.PerspectiveCamera>(null)
@@ -44,19 +45,18 @@ export const Character = () => {
     const move = new THREE.Vector3()
     const camDir = new THREE.Vector3()
     const camRight = new THREE.Vector3()
-
     const vel = bodyRef.current.linvel()
     const finalSpeed = sprintPressed ? speed * 4 : speed
 
-    cameraRef.current.getWorldDirection(camDir)
     camDir.y = 0
     camDir.normalize()
+    cameraRef.current.getWorldDirection(camDir)
     camRight.crossVectors(camDir, new THREE.Vector3(0, 1, 0)).normalize()
 
     if (forwardPressed) move.add(camDir)
-    if (backwardPressed) move.sub(camDir)
     if (leftPressed) move.sub(camRight)
     if (rightPressed) move.add(camRight)
+    if (backwardPressed) move.sub(camDir)
 
     if (move.lengthSq() > 0) {
       move.normalize().multiplyScalar(finalSpeed)
@@ -67,9 +67,13 @@ export const Character = () => {
   }
 
   const resetPosition = () => {
-    if (!resetPressed || !bodyRef.current) return
+    if (!resetPressed || !bodyRef.current || !cameraRef.current) return
 
-    bodyRef.current.setTranslation({ x: 0, y: 20, z: 0 }, true)
+    bodyRef.current.setTranslation({ x: 0, y: eyeLevel, z: 0 }, true)
+
+    cameraRef.current.position.set(0, eyeLevel, 0)
+    cameraRef.current.rotation.set(0, 0, 0)
+    cameraRef.current.lookAt(new THREE.Vector3(0, eyeLevel - 0.5, -1))
   }
 
   const attachCamera = () => {

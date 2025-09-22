@@ -5,7 +5,6 @@ import { Canvas } from '@react-three/fiber'
 import { Physics } from '@react-three/rapier'
 import { Suspense } from 'react'
 import { controlsMap } from '@/static/controls'
-import { Cameras } from './Cameras'
 import { Environment } from './Environment'
 import { Helpers } from './Helpers'
 import { Lights } from './Lights'
@@ -23,15 +22,9 @@ export const Scene = () => (
         <Suspense fallback={<Loader />}>
           <Physics>
             <Helpers />
-
             <Environment />
-
             <Objects />
-
-            <Cameras />
-
             <Sounds />
-
             <Lights />
           </Physics>
         </Suspense>

@@ -38,18 +38,18 @@ export const Chest = () => {
 
   return (
     <>
+      {/* <FullscreenPlane textureUrl='/textures/temp.jpeg' visible={isOpen} /> */}
+
       <RigidBody type='fixed'>
         <primitive
           ref={chest}
           scale={0.01}
           object={scene}
           onClick={onClick}
-          position={[-27.6, 2.5, -13.8]}
-          rotation={[0, degToRad(-25), 0]}
+          position={[0, 1, -5]}
+          rotation={[0, degToRad(-90), 0]}
         />
       </RigidBody>
     </>
   )
 }
-
-useGLTF.preload('/models/chest.glb')
