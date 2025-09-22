@@ -9,8 +9,8 @@ import { CapsuleCollider, type RapierRigidBody, RigidBody } from '@react-three/r
 import { useAtomValue } from 'jotai'
 import { useRef } from 'react'
 import * as THREE from 'three'
+import { CharacterControls } from '@/static/controls'
 import { globalStore } from '@/store'
-import { CharacterControls } from '../..'
 
 const speed = 5
 const eyeLevel = 2
