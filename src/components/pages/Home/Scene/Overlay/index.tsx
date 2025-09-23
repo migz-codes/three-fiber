@@ -1,9 +1,9 @@
 import { AnimatePresence, type MotionProps, motion } from 'framer-motion'
-import { useAtom } from 'jotai'
 import { useState } from 'react'
 import { twMerge as tw } from 'tailwind-merge'
 import { Settings } from '@/assets/icons/Settings'
-import { globalStore } from '@/store'
+import { DevMode } from './DevMode'
+import { GizmaHelper } from './GizmaHelper'
 
 const animations: MotionProps = {
   exit: { opacity: 0, x: 100 },
@@ -13,19 +13,19 @@ const animations: MotionProps = {
 }
 
 export const Overlay = () => {
-  const [isDev, setIsDev] = useAtom(globalStore.isDev)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const onSettingsClick = () => {
-    setIsMenuOpen(!isMenuOpen)
-  }
-
-  const onDevModeClick = () => {
-    setIsDev(!isDev)
+    setIsMenuOpen((prev) => !prev)
   }
 
   return (
-    <aside className='min-w-[52px] fixed top-[0px] right-[0px] z-10 flex items-center justify-center flex-col rounded-bl-[8px] transition-all duration-500 ease-in-out overflow-hidden'>
+    <aside
+      className={tw(
+        'min-w-[52px] fixed top-[0px] right-[0px] z-10 flex items-center justify-center flex-col rounded-bl-[8px] transition-all duration-500 ease-in-out overflow-hidden',
+        isMenuOpen ? 'border-l border-b border-[#79797971]' : 'border border-transparent'
+      )}
+    >
       <button
         type='button'
         onClick={onSettingsClick}
@@ -36,23 +36,16 @@ export const Overlay = () => {
 
       {isMenuOpen && (
         <AnimatePresence>
-          <motion.ul {...animations}>
-            <li className='flex items-center justify-center relative z-10 p-[8px]'>
-              <button
-                type='button'
-                onClick={onDevModeClick}
-                className='text-[#fff] text-[16px] p-[8px]'
-              >
-                {isDev ? 'disable dev mode' : 'enable dev mode'}
-              </button>
-            </li>
+          <motion.ul className='w-[200px]' {...animations}>
+            <DevMode />
+            <GizmaHelper />
           </motion.ul>
         </AnimatePresence>
       )}
 
       <div
         className={tw(
-          'absolute top-[0px] right-[0px] bottom-[0px] left-[0px] bg-[#000] transition-opacity duration-500 ease-in-out',
+          'absolute top-[0px] right-[0px] bottom-[0px] bg-[#000] left-[0px] transition-all duration-300 ease-in-out',
           isMenuOpen ? 'opacity-50' : 'opacity-0'
         )}
       ></div>

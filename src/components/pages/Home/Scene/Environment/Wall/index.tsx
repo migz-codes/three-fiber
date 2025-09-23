@@ -1,29 +1,26 @@
 import { RigidBody } from '@react-three/rapier'
+import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 import * as THREE from 'three'
-import { useARMTextures } from '@/hooks/useTextures'
+import { globalStore } from '@/store'
 
 export interface TWallProps {
-  size: number
-  height: number
-  depth: number
   position: any
-  rotation?: any
+  rotation: any
 }
 
-export const Wall = ({ size, height, depth, position, rotation }: TWallProps) => {
-  const { textures, applyUV2 } = useARMTextures({ name: 'rock' })
+export const Wall = ({ position, rotation }: TWallProps) => {
+  const isDev = useAtomValue(globalStore.isDev)
 
   const geometry = useMemo(() => {
-    const geo = new THREE.BoxGeometry(size, height - depth, depth, 64, 10, 64)
-    applyUV2(geo)
+    const geo = new THREE.PlaneGeometry(50, 10, 4, 4)
     return geo
-  }, [size, height, depth, applyUV2])
+  }, [])
 
   return (
     <RigidBody type='fixed'>
-      <mesh receiveShadow position={position} rotation={rotation} geometry={geometry}>
-        <meshStandardMaterial {...textures} />
+      <mesh position={position} rotation={rotation} geometry={geometry}>
+        <meshStandardMaterial wireframe={isDev} opacity={isDev ? 1 : 0} transparent />
       </mesh>
     </RigidBody>
   )

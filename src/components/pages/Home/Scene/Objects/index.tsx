@@ -1,9 +1,9 @@
-import { Character } from './Character'
+import { CharacterWrapper } from './CharacterWrapper'
 import { Chest } from './Chest'
 
 export const Objects = () => (
   <>
-    <Character />
+    <CharacterWrapper />
     <Chest />
   </>
 )
