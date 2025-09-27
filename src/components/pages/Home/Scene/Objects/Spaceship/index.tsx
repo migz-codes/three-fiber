@@ -1,14 +1,14 @@
 /** biome-ignore-all lint/a11y/noStaticElementInteractions: is 3D */
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Model } from './Model'
 
 export const Spaceship = () => {
   const [isHovered, setIsHovered] = useState(false)
 
-  const onModelPointerOver = () => setIsHovered(true)
+  const onModelPointerOver = useCallback(() => setIsHovered(true), [])
 
-  const onModelPointerOut = () => setIsHovered(false)
+  const onModelPointerOut = useCallback(() => setIsHovered(false), [])
 
   useEffect(() => {
     document.body.style.cursor = isHovered ? 'pointer' : 'default'
@@ -16,8 +16,6 @@ export const Spaceship = () => {
 
   return (
     <>
-      <ambientLight intensity={10} />
-
       <Model
         isHovered={isHovered}
         onPointerOut={onModelPointerOut}

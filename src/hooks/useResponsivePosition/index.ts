@@ -4,26 +4,36 @@ import { useMemo } from 'react'
 const referenceWidth = 2507
 const referenceHeight = 925
 
-interface TTransformProps {
+type TResponsiveScaleProps = {
   scale: number
+}
+
+type TResponsivePositionProps = {
   position: [number, number, number]
 }
 
-export const useResponsiveTransform = (params: TTransformProps) => {
+export const useResponsiveScale = ({ scale }: TResponsiveScaleProps) => {
   const { size } = useThree()
 
   return useMemo(() => {
-    const scaleX = size.width / referenceWidth / params.scale
-    const scaleY = size.height / referenceHeight / params.scale
+    const scaleX = size.width / referenceWidth / scale
+    const scaleY = size.height / referenceHeight / scale
 
-    const scale = Math.min(scaleX, scaleY)
+    return { scale: Math.min(scaleX, scaleY) }
+  }, [size.width, size.height, scale])
+}
 
-    const position: [number, number, number] = [
-      (params.position[0] / referenceWidth) * size.width,
-      (params.position[1] / referenceHeight) * size.height,
-      params.position[2]
-    ]
+export const useResponsivePosition = ({ position }: TResponsivePositionProps) => {
+  const { size } = useThree()
 
-    return { scale, position }
-  }, [size.width, size.height, params.position, params.scale])
+  return useMemo(
+    () => ({
+      position: [
+        (position[0] / referenceWidth) * size.width,
+        (position[1] / referenceHeight) * size.height,
+        position[2]
+      ]
+    }),
+    [size.width, size.height, position]
+  )
 }
