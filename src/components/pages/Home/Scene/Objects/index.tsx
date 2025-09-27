@@ -1,9 +1,9 @@
-import { CharacterWrapper } from './CharacterWrapper'
-import { Chest } from './Chest'
+import { Galaxy } from './Galaxy'
+import { Spaceship } from './Spaceship'
 
 export const Objects = () => (
   <>
-    <CharacterWrapper />
-    <Chest />
+    <Galaxy />
+    <Spaceship />
   </>
 )

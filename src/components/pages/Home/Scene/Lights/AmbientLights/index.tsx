@@ -17,8 +17,8 @@ export const AmbientLights = () => {
 
   return (
     <>
-      <directionalLight intensity={0.5} ref={light} position={[-25, 25, 0]} />
-      <directionalLight intensity={0.5} ref={light2} position={[25, 25, 0]} />
+      <directionalLight intensity={1} ref={light} position={[-25, 25, 0]} />
+      <directionalLight intensity={1} ref={light2} position={[25, 25, 0]} />
     </>
   )
 }
