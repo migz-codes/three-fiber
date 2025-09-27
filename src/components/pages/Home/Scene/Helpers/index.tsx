@@ -9,7 +9,7 @@ export const Helpers = () => {
   if (isDev)
     return (
       <>
-        <gridHelper args={[50, 50, '#f00', '#fff']} />
+        {/* <gridHelper args={[50, 50, '#f00', '#fff']} /> */}
 
         <GizmoHelper alignment='bottom-right' margin={[80, 80]} scale={100}>
           {isGizmaViewCube ? <GizmoViewcube /> : <GizmoViewport />}

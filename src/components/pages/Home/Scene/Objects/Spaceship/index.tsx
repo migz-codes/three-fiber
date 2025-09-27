@@ -1,47 +1,28 @@
 /** biome-ignore-all lint/a11y/noStaticElementInteractions: is 3D */
-import { PerspectiveCamera, useAnimations, useGLTF } from '@react-three/drei'
-import { useCallback, useEffect, useRef } from 'react'
-import type * as THREE from 'three'
-import { degToRad } from '@/utils/degToRad'
+
+import { useEffect, useState } from 'react'
+import { Model } from './Model'
 
 export const Spaceship = () => {
-  const spaceship = useRef<THREE.Group>(null)
-  const { scene, animations } = useGLTF('/models/spaceship_-_cb2.glb')
-  const { actions } = useAnimations(animations, spaceship)
+  const [isHovered, setIsHovered] = useState(false)
 
-  const setOptions = useCallback(() => {
-    scene.traverse(() => {})
-  }, [scene])
+  const onModelPointerOver = () => setIsHovered(true)
 
-  const setAnimation = useCallback(() => {
-    if (actions && Object.keys(actions).length > 0) {
-      const action = actions[Object.keys(actions)[0]]
-
-      if (!action) return
-
-      action.play()
-      action.timeScale = 1
-    }
-  }, [actions])
+  const onModelPointerOut = () => setIsHovered(false)
 
   useEffect(() => {
-    setOptions()
-    setAnimation()
-  }, [setOptions, setAnimation])
+    document.body.style.cursor = isHovered ? 'pointer' : 'default'
+  }, [isHovered])
 
   return (
     <>
       <ambientLight intensity={10} />
 
-      <primitive
-        ref={spaceship}
-        scale={1}
-        object={scene}
-        position={[340, 300, 0]}
-        rotation={[0, degToRad(90), 0]}
+      <Model
+        isHovered={isHovered}
+        onPointerOut={onModelPointerOut}
+        onPointerOver={onModelPointerOver}
       />
-
-      <PerspectiveCamera makeDefault position={[400, 350, -30]} rotation={[0, 0, 0]} fov={50} />
     </>
   )
 }

@@ -12,26 +12,15 @@ import { Objects } from './Objects'
 import { Overlay } from './Overlay'
 
 export const Scene = () => (
-  <main className='w-screen h-screen flex flex-col'>
+  <main className='w-screen h-screen flex flex-row items-center justify-center'>
     <Overlay />
 
     <KeyboardControls map={controlsMap}>
-      <Canvas
-        shadows
-        className='bg-black w-[50%] h-full'
-        id='canvas'
-        camera={{
-          position: [0, 5, 10],
-          near: 0.1,
-          far: 5000 // increase this
-        }}
-      >
+      <Canvas shadows id='canvas' dpr={[1, 2]} className='bg-black w-full h-full border'>
         <Suspense fallback={<Loader />}>
           <Physics>
-            <Helpers />
-            {/* <Environment /> */}
             <Objects />
-            {/* <Sounds /> */}
+            <Helpers />
             <Lights />
           </Physics>
           <OrbitControls />

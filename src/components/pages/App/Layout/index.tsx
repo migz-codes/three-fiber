@@ -1,4 +1,5 @@
 import '@/styles/globals.css'
+
 import { Roboto } from 'next/font/google'
 import type { TChildrenProps } from '@/types'
 import { Providers } from './Providers'
