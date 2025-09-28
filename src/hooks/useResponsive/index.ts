@@ -17,7 +17,7 @@ export const useResponsiveScale = ({ scale }: TResponsiveScaleProps) => {
   const scaleX = size.width / referenceWidth / scale
   const scaleY = size.height / referenceHeight / scale
 
-  return { scale: Math.min(scaleX, scaleY) }
+  return { scale: Math.min(scaleX, scaleY) as number }
 }
 
 export const useResponsivePosition = ({ position }: TResponsivePositionProps) => {
@@ -28,6 +28,6 @@ export const useResponsivePosition = ({ position }: TResponsivePositionProps) =>
       (position[0] / referenceWidth) * size.width,
       (position[1] / referenceHeight) * size.height,
       position[2]
-    ]
+    ] as [number, number, number]
   }
 }

@@ -2,5 +2,6 @@ import { atom } from 'jotai'
 
 const isDev = atom(false)
 const isGizmaViewCube = atom(false)
+const mouseOverlayText = atom<string>()
 
-export const globalStore = { isDev, isGizmaViewCube }
+export const globalStore = { isDev, isGizmaViewCube, mouseOverlayText }

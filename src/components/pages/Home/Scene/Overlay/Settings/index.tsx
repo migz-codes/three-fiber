@@ -23,13 +23,15 @@ export const Settings = () => {
     <aside
       className={tw(
         'min-w-[52px] fixed top-[0px] right-[0px] z-10 flex items-center justify-center flex-col rounded-bl-[8px] transition-all duration-500 ease-in-out overflow-hidden',
-        isMenuOpen ? 'border-l border-b border-[#79797971]' : 'border border-transparent'
+        isMenuOpen
+          ? 'border-l border-b border-[#79797971] pointer-events-auto'
+          : 'border border-transparent'
       )}
     >
       <button
         type='button'
         onClick={onSettingsClick}
-        className='opacity-70 hover:opacity-100 flex items-center justify-center w-[52px] h-[52px] self-end relative z-10'
+        className='opacity-70 hover:opacity-100 flex items-center justify-center w-[52px] h-[52px] self-end relative z-10 pointer-events-auto'
       >
         <SettingsIcon className='w-[24px] h-[24px] fill-[#fff]' />
       </button>
