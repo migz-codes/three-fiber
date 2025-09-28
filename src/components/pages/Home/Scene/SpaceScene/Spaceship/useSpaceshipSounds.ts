@@ -1,6 +1,8 @@
 import { useThree } from '@react-three/fiber'
+import { useAtomValue } from 'jotai'
 import { type RefObject, useEffect, useRef } from 'react'
 import * as THREE from 'three'
+import { globalStore } from '@/store'
 
 export const useSpaceshipSounds = (
   spaceship: RefObject<THREE.Group<THREE.Object3DEventMap> | null>
@@ -8,6 +10,7 @@ export const useSpaceshipSounds = (
   const { camera } = useThree()
   const enterSoundRef = useRef<THREE.PositionalAudio>(null)
   const hoveringSoundRef = useRef<THREE.PositionalAudio>(null)
+  const audios = useAtomValue(globalStore.audioMapAtom)
 
   const playEnter = () => {
     if (!enterSoundRef.current) return
@@ -22,46 +25,34 @@ export const useSpaceshipSounds = (
   }
 
   useEffect(() => {
-    const loader = new THREE.AudioLoader()
-    const listener = new THREE.AudioListener()
-    const enterSound = new THREE.PositionalAudio(listener)
-    const hoveringSound = new THREE.PositionalAudio(listener)
+    if (!audios.enter || !audios.hovering) return
 
+    const listener = new THREE.AudioListener()
     camera.add(listener)
 
-    loader.load('/sounds/spaceship-enter.wav', (buffer) => {
-      enterSound.setVolume(1)
-      enterSound.setLoop(false)
-      enterSound.setBuffer(buffer)
+    const enterSound = new THREE.PositionalAudio(listener)
+    enterSound.setBuffer(audios.enter)
+    enterSound.setLoop(false)
+    enterSound.setVolume(1)
+    spaceship.current?.add(enterSound)
+    enterSoundRef.current = enterSound
 
-      hoveringSound.setVolume(0.5)
-      hoveringSound.setRefDistance(50)
-      hoveringSound.setRolloffFactor(2)
-      hoveringSound.setMaxDistance(1000)
-
-      spaceship.current?.add(enterSound)
-      enterSoundRef.current = enterSound
-    })
-
-    loader.load('/sounds/spaceship-hovering.wav', (buffer) => {
-      hoveringSound.setLoop(true)
-      hoveringSound.setBuffer(buffer)
-
-      hoveringSound.setVolume(0.1)
-      hoveringSound.setRefDistance(50)
-      hoveringSound.setRolloffFactor(2)
-      hoveringSound.setMaxDistance(1000)
-
-      spaceship.current?.add(hoveringSound)
-      hoveringSoundRef.current = hoveringSound
-    })
+    const hoveringSound = new THREE.PositionalAudio(listener)
+    hoveringSound.setBuffer(audios.hovering)
+    hoveringSound.setLoop(true)
+    hoveringSound.setVolume(0.1)
+    hoveringSound.setRefDistance(50)
+    hoveringSound.setRolloffFactor(2)
+    hoveringSound.setMaxDistance(1000)
+    spaceship.current?.add(hoveringSound)
+    hoveringSoundRef.current = hoveringSound
 
     return () => {
       camera.remove(listener)
       enterSound.disconnect()
       hoveringSound.disconnect()
     }
-  }, [camera, spaceship])
+  }, [audios, camera, spaceship])
 
   return { playEnter, playHovering }
 }

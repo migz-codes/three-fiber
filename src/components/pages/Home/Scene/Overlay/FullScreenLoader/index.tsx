@@ -1,15 +1,18 @@
 import { useProgress } from '@react-three/drei'
 import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
+import { useGlobalAudioLoader } from '@/hooks/useGlobalAudioLoader'
 import { globalStore } from '@/store'
 
 export const FullScreenLoader = () => {
-  const { progress } = useProgress()
   const setIsLoading = useSetAtom(globalStore.isLoading)
 
+  const { progress } = useProgress()
+  const { isLoading: isLoadingAudios } = useGlobalAudioLoader()
+
   useEffect(() => {
-    setIsLoading(progress < 100)
-  }, [progress, setIsLoading])
+    setIsLoading(progress < 100 || isLoadingAudios)
+  }, [progress, setIsLoading, isLoadingAudios])
 
   if (progress >= 100) return <></>
 
