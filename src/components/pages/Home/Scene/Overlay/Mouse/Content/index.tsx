@@ -10,8 +10,6 @@ export const Content = () => {
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      console.log(e.clientX, e.clientY)
-
       setMouse({ x: e.clientX, y: e.clientY })
     }
 

@@ -1,3 +1,4 @@
+import { FullScreenLoader } from './FullScreenLoader'
 import { Mouse } from './Mouse'
 import { Settings } from './Settings'
 
@@ -8,5 +9,6 @@ export const Overlay = () => (
   >
     <Settings />
     <Mouse />
+    <FullScreenLoader />
   </div>
 )

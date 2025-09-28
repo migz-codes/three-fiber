@@ -1,7 +1,7 @@
 /** biome-ignore-all lint/correctness/useExhaustiveDependencies: already verified by me and handled by react-compile */
 import { useAnimations, useGLTF } from '@react-three/drei'
 import { useFrame, useThree } from '@react-three/fiber'
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useRef, useState } from 'react'
 import type * as THREE from 'three'
 import { useResponsivePosition, useResponsiveScale } from '@/hooks/useResponsive'
@@ -9,6 +9,8 @@ import { globalStore } from '@/store'
 import { createCurve } from '@/utils/createCurve'
 import { degToRad } from '@/utils/degToRad'
 import { easeOutQuad } from '@/utils/ease'
+import { FullScreenHtml } from '../../Overlay/FullScreenHtml'
+import { useSpaceshipSounds } from './useSpaceshipSounds'
 
 const bounceAnimationSpeed = 0.3
 const hoverBounceAnimationSpeed = 1
@@ -16,12 +18,14 @@ const hoverText = 'Entrar na nave'
 
 export const Spaceship = () => {
   const isDev = useAtomValue(globalStore.isDev)
+  const [isStarted, setIsStarted] = useAtom(globalStore.isStarted)
   const setMouseOverlayText = useSetAtom(globalStore.mouseOverlayText)
 
   const { camera } = useThree()
   const animationDoneRef = useRef(false)
   const spaceship = useRef<THREE.Group>(null)
   const [translation, setTranslation] = useState(0)
+  const { playEnter, playHovering } = useSpaceshipSounds(spaceship)
   const { position: finalPosition } = useResponsivePosition({ position: [-10, -2, -40] })
   const { position: initialPosition } = useResponsivePosition({ position: [-100, 100, -500] })
 
@@ -51,12 +55,13 @@ export const Spaceship = () => {
   }
 
   const initialAnimation = () => {
-    if (!spaceship.current || animationDoneRef.current) return
+    if (!spaceship.current || animationDoneRef.current || !isStarted) return
 
-    const newTranslation = translation + 0.01
+    const newTranslation = translation + 0.005
     const easedTranslation = easeOutQuad(Math.min(newTranslation, 1))
 
     spaceship.current.position.copy(curve.getPoint(easedTranslation))
+
     setTranslation(Math.min(newTranslation, 1))
 
     if (newTranslation >= 1) {
@@ -101,6 +106,12 @@ export const Spaceship = () => {
     setMouseOverlayText(isHovered ? hoverText : '')
   }
 
+  const onPlay = () => {
+    playEnter()
+    playHovering()
+    setIsStarted(true)
+  }
+
   useEffect(() => {
     setHoverOverlay()
   }, [isHovered])
@@ -130,13 +141,17 @@ export const Spaceship = () => {
   })
 
   return (
-    <primitive
-      object={scene}
-      ref={spaceship}
-      scale={scale}
-      onPointerOut={onPointerOut}
-      onPointerOver={onPointerOver}
-      rotation={[0, degToRad(-40), degToRad(-20)]}
-    />
+    <>
+      {!isStarted && <FullScreenHtml onClick={onPlay} title='Começar experiência' />}
+
+      <primitive
+        object={scene}
+        ref={spaceship}
+        scale={scale}
+        onPointerOut={onPointerOut}
+        onPointerOver={onPointerOver}
+        rotation={[0, degToRad(-40), degToRad(-20)]}
+      />
+    </>
   )
 }
