@@ -7,10 +7,12 @@ import { globalStore } from '@/store'
 export const useSpaceshipSounds = (
   spaceship: RefObject<THREE.Group<THREE.Object3DEventMap> | null>
 ) => {
+  const audios = useAtomValue(globalStore.audioMapAtom)
+
   const { camera } = useThree()
   const enterSoundRef = useRef<THREE.PositionalAudio>(null)
+  const musicSoundRef = useRef<THREE.PositionalAudio>(null)
   const hoveringSoundRef = useRef<THREE.PositionalAudio>(null)
-  const audios = useAtomValue(globalStore.audioMapAtom)
 
   const playEnter = () => {
     if (!enterSoundRef.current) return
@@ -24,8 +26,14 @@ export const useSpaceshipSounds = (
     hoveringSoundRef.current.play()
   }
 
+  const playMusic = () => {
+    if (!musicSoundRef.current) return
+
+    musicSoundRef.current.play()
+  }
+
   useEffect(() => {
-    if (!audios.enter || !audios.hovering) return
+    if (!audios.enter || !audios.hovering || !audios.music) return
 
     const listener = new THREE.AudioListener()
     camera.add(listener)
@@ -47,12 +55,23 @@ export const useSpaceshipSounds = (
     spaceship.current?.add(hoveringSound)
     hoveringSoundRef.current = hoveringSound
 
+    const musicSound = new THREE.PositionalAudio(listener)
+    musicSound.setBuffer(audios.music)
+    musicSound.setLoop(true)
+    musicSound.setVolume(0.3)
+    musicSound.setRefDistance(50)
+    musicSound.setRolloffFactor(2)
+    musicSound.setMaxDistance(1000)
+    spaceship.current?.add(musicSound)
+    musicSoundRef.current = musicSound
+
     return () => {
       camera.remove(listener)
       enterSound.disconnect()
       hoveringSound.disconnect()
+      musicSound.disconnect()
     }
   }, [audios, camera, spaceship])
 
-  return { playEnter, playHovering }
+  return { playEnter, playHovering, playMusic }
 }

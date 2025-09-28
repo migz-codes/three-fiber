@@ -1,26 +1,24 @@
-import { useProgress } from '@react-three/drei'
-import { useSetAtom } from 'jotai'
-import { useEffect } from 'react'
-import { useGlobalAudioLoader } from '@/hooks/useGlobalAudioLoader'
+import { useAtom } from 'jotai'
+import { useEffect, useState } from 'react'
 import { globalStore } from '@/store'
+import { Sounds } from './Sounds'
+import { Textures } from './Textures'
 
 export const FullScreenLoader = () => {
-  const setIsLoading = useSetAtom(globalStore.isLoading)
-
-  const { progress } = useProgress()
-  const { isLoading: isLoadingAudios } = useGlobalAudioLoader()
+  const [isLoading, setIsLoading] = useAtom(globalStore.isLoading)
+  const [isTexturesLoaded, setisTexturesLoaded] = useState(false)
+  const [isSoundsLoaded, setisSoundsLoaded] = useState(false)
 
   useEffect(() => {
-    setIsLoading(progress < 100 || isLoadingAudios)
-  }, [progress, setIsLoading, isLoadingAudios])
+    setIsLoading(!isTexturesLoaded || !isSoundsLoaded)
+  }, [isTexturesLoaded, isSoundsLoaded, setIsLoading])
 
-  if (progress >= 100) return <></>
+  if (!isLoading) return <></>
 
   return (
-    <div className='bg-[#000]/80 fixed top-0 left-0 right-0 bottom-0 w-screen h-screen z-[9999] flex items-center justify-center border-2 border-green-500/80 pointer-events-auto'>
-      <span className='text-[24px] text-green-500/80 font-secondary'>
-        loading {progress.toFixed(0)}%
-      </span>
+    <div className='bg-[#000]/80 fixed top-0 left-0 right-0 bottom-0 w-screen h-screen z-[9999] flex items-center gap-y-[16px] justify-center border-2 border-green-500/80 pointer-events-auto flex-col'>
+      <Textures onLoaded={() => setisTexturesLoaded(true)} />
+      <Sounds onLoaded={() => setisSoundsLoaded(true)} />
     </div>
   )
 }

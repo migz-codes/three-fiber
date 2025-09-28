@@ -14,10 +14,11 @@ import { useSpaceshipSounds } from './useSpaceshipSounds'
 
 const bounceAnimationSpeed = 0.3
 const hoverBounceAnimationSpeed = 1
-const hoverText = 'Entrar na nave'
+const hoverText = 'enter the spaceship'
 
 export const Spaceship = () => {
   const isDev = useAtomValue(globalStore.isDev)
+  const isLoading = useAtomValue(globalStore.isLoading)
   const [isStarted, setIsStarted] = useAtom(globalStore.isStarted)
   const setMouseOverlayText = useSetAtom(globalStore.mouseOverlayText)
 
@@ -25,7 +26,7 @@ export const Spaceship = () => {
   const animationDoneRef = useRef(false)
   const spaceship = useRef<THREE.Group>(null)
   const [translation, setTranslation] = useState(0)
-  const { playEnter, playHovering } = useSpaceshipSounds(spaceship)
+  const { playEnter, playHovering, playMusic } = useSpaceshipSounds(spaceship)
   const { position: finalPosition } = useResponsivePosition({ position: [-10, -2, -40] })
   const { position: initialPosition } = useResponsivePosition({ position: [-100, 100, -500] })
 
@@ -108,6 +109,7 @@ export const Spaceship = () => {
 
   const onPlay = () => {
     playEnter()
+    playMusic()
     playHovering()
     setIsStarted(true)
   }
@@ -142,7 +144,7 @@ export const Spaceship = () => {
 
   return (
     <>
-      {!isStarted && <FullScreenHtml onClick={onPlay} title='Começar experiência' />}
+      {!isStarted && !isLoading && <FullScreenHtml onClick={onPlay} title='start experience' />}
 
       <primitive
         object={scene}
