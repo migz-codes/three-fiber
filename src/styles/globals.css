@@ -1,9 +1,9 @@
 @import 'tailwindcss';
-/* @import './themes/breakpoints.css'; */
 @import './themes/colors.css';
 @import './themes/base.css';
 
 @theme inline {
-  --font-primary: var(--roboto-font);
-  --font-secondary: var(--vt323-font);
+  --font-primary: var(--astro-font);
+  --font-secondary: var(--tesla-font);
+  --font-tertiary: var(--roboto-font);
 }

@@ -9,8 +9,9 @@ export const Textures = ({ onLoaded }: { onLoaded: () => void }) => {
   }, [progress, onLoaded])
 
   return (
-    <span className='text-[24px] text-green-500/80 font-secondary'>
-      loading textures and models {progress.toFixed(0)}%
+    <span className='text-[24px] text-[#37d2d5] font-secondary'>
+      loading textures and models{' '}
+      <strong className='text-[#ff781e] font-secondary text-[24px]'>{progress.toFixed(0)}%</strong>
     </span>
   )
 }

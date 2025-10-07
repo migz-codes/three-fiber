@@ -16,19 +16,16 @@ export const useSpaceshipSounds = (
 
   const playEnter = () => {
     if (!enterSoundRef.current) return
-
     enterSoundRef.current.play()
   }
 
   const playHovering = () => {
     if (!hoveringSoundRef.current) return
-
     hoveringSoundRef.current.play()
   }
 
   const playMusic = () => {
     if (!musicSoundRef.current) return
-
     musicSoundRef.current.play()
   }
 

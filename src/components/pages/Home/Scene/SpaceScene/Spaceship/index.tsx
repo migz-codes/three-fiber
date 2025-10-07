@@ -1,6 +1,8 @@
 /** biome-ignore-all lint/correctness/useExhaustiveDependencies: already verified by me and handled by react-compile */
+/** biome-ignore-all lint/a11y/noStaticElementInteractions: false positive */
 import { useAnimations, useGLTF } from '@react-three/drei'
 import { useFrame, useThree } from '@react-three/fiber'
+
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useRef, useState } from 'react'
 import type * as THREE from 'three'
@@ -32,11 +34,15 @@ export const Spaceship = () => {
 
   const curve = createCurve(initialPosition, finalPosition, 50)
 
-  const { scene, animations } = useGLTF('/models/spaceship_-_cb2.glb')
+  const { scene, animations } = useGLTF('/models/spaceship.glb')
   const { actions } = useAnimations(animations, spaceship)
   const { scale } = useResponsiveScale({ scale: 1 })
 
   const [isHovered, setIsHovered] = useState(false)
+
+  const moveTarget = useRef<THREE.Vector3 | null>(null)
+
+  const onClick = () => {}
 
   const onPointerOut = () => setIsHovered(false)
 
@@ -139,6 +145,14 @@ export const Spaceship = () => {
   }, [camera])
 
   useFrame(() => {
+    if (moveTarget.current) {
+      camera.position.lerp(moveTarget.current, 0.05)
+
+      if (camera.position.distanceTo(moveTarget.current) < 0.01) {
+        moveTarget.current = null
+      }
+    }
+
     initialAnimation()
   })
 
@@ -147,9 +161,10 @@ export const Spaceship = () => {
       {!isStarted && !isLoading && <FullScreenHtml onClick={onPlay} title='start experience' />}
 
       <primitive
+        scale={scale}
         object={scene}
         ref={spaceship}
-        scale={scale}
+        onClick={onClick}
         onPointerOut={onPointerOut}
         onPointerOver={onPointerOver}
         rotation={[0, degToRad(-40), degToRad(-20)]}
